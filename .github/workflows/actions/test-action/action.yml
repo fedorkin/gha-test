@@ -1,9 +1,6 @@
 name: package and publish helm chart
 description: package and publish helm chart to artifact
 inputs:
-  artifactName:
-    required: true
-    description: name of build artifact
   isPublish:
     required: true
     description: whether to publish artifact
@@ -11,13 +8,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Pack helm chart
-      shell: bash
-      run: helm package --destination ./helm/output/helm-package ./helm/subz
-
     - name: Publish helm chart to artifacts
-      uses: actions/upload-artifact@v3.1.1
-      if: ${{ inputs.isPublish == true }}}
-      with:
-        name: ${{ inputs.artifactName }}
-        path: helm/output
+      if: inputs.isPublish == 'true'
+      run: echo "Hello"
