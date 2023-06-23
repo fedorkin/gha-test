@@ -24,7 +24,7 @@ jobs:
       - name: Check variable
         uses: ./.github/workflows/actions/test-action
         with:
-          isPublish: env.IS_PUBLISH
+          isPublish: ${{ env.IS_PUBLISH }}
           
       - name: Previous Step
         id: previous
