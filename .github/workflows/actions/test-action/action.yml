@@ -11,3 +11,4 @@ runs:
     - name: Publish helm chart to artifacts
       if: inputs.isPublish == 'true'
       run: echo "Hello"
+      shell: bash
