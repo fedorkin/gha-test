@@ -13,7 +13,7 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 env:
-  IS_PUBLISH: "false"
+  IS_PUBLISH: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -27,5 +27,5 @@ jobs:
         id: conditional
         run: |
           echo "This is the conditional step"
-        if: success() && env.IS_PUBLISH == 'true' # Checking if previous step was successful and IS_PUBLISH is 'true'.
+        if: success() && env.IS_PUBLISH == 'true'
 
