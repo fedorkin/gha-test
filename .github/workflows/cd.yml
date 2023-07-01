@@ -1,7 +1,6 @@
 name: tofu-deploy
 
-on:
-  push: push
+on: push
   # workflow_dispatch:
   #   inputs:
   #     environment:
