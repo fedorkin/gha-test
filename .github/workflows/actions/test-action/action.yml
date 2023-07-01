@@ -1,0 +1,14 @@
+name: package and publish helm chart
+description: package and publish helm chart to artifact
+inputs:
+  isPublish:
+    required: true
+    description: whether to publish artifact
+
+runs:
+  using: composite
+  steps:
+    - name: Publish helm chart to artifacts
+      if: inputs.isPublish == 'true'
+      run: echo "Hello"
+      shell: bash
