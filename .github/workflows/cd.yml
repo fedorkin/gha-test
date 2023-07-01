@@ -30,4 +30,4 @@ jobs:
         run: ls -R
       
       - name: Echo connection string from secrets
-        run: echo ${{ secrets.DB_CONNECTION_STRING }}
+        run: echo ${{ Develop secrets.DB_CONNECTION_STRING }}
