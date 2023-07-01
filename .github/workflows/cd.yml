@@ -1,6 +1,7 @@
 name: tofu-deploy
 
 on: push
+environment: tofu-test
   # workflow_dispatch:
   #   inputs:
   #     environment:
