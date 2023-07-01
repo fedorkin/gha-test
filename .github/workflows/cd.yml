@@ -1,17 +1,18 @@
-name: tofu-deploy
+name: CD
 
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to run tests against'
-        type: environment
-        required: true
-#on:
-#  workflow_call:
-#    workflows: ["Subs CI"]
-#    types:
-#      - completed
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       environment:
+#         description: 'Environment to run tests against'
+#         type: environment
+#         required: true
 
 env:
   ARTIFACT_NAME: artifact
@@ -30,4 +31,4 @@ jobs:
         run: ls -R
       
       - name: Echo connection string from secrets
-        run: echo "Develop ${{ secrets.DB_CONNECTION_STRING }}"
+        run: echo "${GITHUB_REF} ${{ secrets.DB_CONNECTION_STRING }}"
