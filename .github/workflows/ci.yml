@@ -8,15 +8,16 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      services: ${{ steps.set-matrix.outputs.services }}
     steps:
       - id: set-matrix
-        run: echo "matrix={\"include\":[{\"service\":\"service1\"},{\"service\":\"service2\"}]}" >> $GITHUB_OUTPUT
+        run: echo "services=[\"service1\",\"service2\"]" >> $GITHUB_OUTPUT
   job2:
     needs: job1
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{ fromJSON(needs.job1.outputs.matrix) }}
+      matrix: 
+        service: ${{ fromJSON(needs.job1.outputs.services) }}
     steps:
       - run: echo ${{ matrix.service }}
 
