@@ -14,7 +14,7 @@ jobs:
       - name: Generate Matrix
         id: generate-matrix
         run: |
-          SERVICES='${{ toJSON(vars.SERVICES_LIST) }}'
+          SERVICES=${{ toJSON(vars.SERVICES_LIST) }}
           echo ::set-output name=services::${SERVICES}
 
   # ------------------------
