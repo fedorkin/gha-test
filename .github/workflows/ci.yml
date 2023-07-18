@@ -4,25 +4,48 @@ on:
   push:
 
 jobs:
+
   job1:
     runs-on: ubuntu-latest
-    environment: tofu-test
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.services }}
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - id: set-matrix
-        run: echo "services=${{ toJSON(vars.SERVICES_LIST) }}" >> $GITHUB_OUTPUT
-  
-  my_matrix:
+        run: echo "matrix={\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}" >> $GITHUB_OUTPUT
+  job2:
     needs: job1
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        service: ${{ fromJSON(needs.job1.outputs.services) }}
+      matrix: ${{ fromJSON(needs.job1.outputs.matrix) }}
     steps:
-      - name: Matrix => (${{ matrix.service }})
-        run: |
-          echo ${{ matrix.service }}
+      - run: build
+
+  # job1:
+  #   runs-on: ubuntu-latest
+  #   environment: tofu-test
+  #   outputs:
+  #     matrix: ${{ steps.set-matrix.outputs.services }}
+  #   steps:
+  #     - id: set-matrix
+  #       run: echo "services=${{ toJSON(vars.SERVICES_LIST) }}" >> $GITHUB_OUTPUT
+  
+  # my_matrix:
+  #   needs: job1
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       service: ${{ fromJSON(needs.job1.outputs.services) }}
+  #   steps:
+  #     - name: Matrix => (${{ matrix.service }})
+  #       run: |
+  #         echo ${{ matrix.service }}
+
+
+
+
+
+
+
 
 # jobs:
 #   # ------------------------
