@@ -4,11 +4,13 @@ on:
   push:
 
 jobs:
+
   my_matrix:
     runs-on: ubuntu-latest
+    environment: tofu-test
     strategy:
       matrix:
-        service: ${{ vars.SERVICES_LIST }}
+        service: ${{ fromJSON(vars.SERVICES_LIST) }}
     steps:
       - name: Matrix => (${{ matrix.service }})
         run: |
