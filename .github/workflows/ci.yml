@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: ${{ fromJSON(vars.SERVICES_LIST) }}
+        service: ${{ vars.SERVICES_LIST }}
     steps:
       - name: Matrix => (${{ matrix.service }})
         run: |
