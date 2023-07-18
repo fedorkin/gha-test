@@ -13,7 +13,7 @@ jobs:
     #     service: ${{ fromJSON(toJson(vars.SERVICES_LIST)) }}
     steps:
       - name: echo
-        run: echo ${{ vars.SERVICES_LIST }}
+        run: echo ${{ toJSON(vars.SERVICES_LIST) }}
       # - name: Matrix => (${{ matrix.service }})
       #   run: |
       #     echo ${{ matrix.service }}
