@@ -10,7 +10,7 @@ jobs:
     environment: tofu-test
     strategy:
       matrix:
-        service: ${{ vars.SERVICES_LIST }}
+        service: ${{ fromJSON(toJson(vars.SERVICES_LIST)) }}
     steps:
       - name: Matrix => (${{ matrix.service }})
         run: |
