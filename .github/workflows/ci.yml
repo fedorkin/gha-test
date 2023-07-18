@@ -11,7 +11,7 @@ jobs:
       services: ${{ steps.set-matrix.outputs.services }}
     steps:
       - id: set-matrix
-        run: echo "services=[\"service1\",\"service2\"]" >> $GITHUB_OUTPUT
+        run: echo "services=${{ toJSON(vars.SERVICES_LIST) }}" >> $GITHUB_OUTPUT
   job2:
     needs: job1
     runs-on: ubuntu-latest
