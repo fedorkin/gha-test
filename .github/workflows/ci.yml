@@ -32,9 +32,10 @@ jobs:
       - name: Generate Matrix
         id: generate-matrix
         run: |
-          SERVICES=${{ fromJSON(vars.SERVICES_LIST) }}
-          echo ${SERVICES}
-          
+          echo ${{ vars.SERVICES_LIST }}
+          # SERVICES=${{ fromJSON(vars.SERVICES_LIST) }}
+          # echo ${SERVICES}
+
 
       
 
