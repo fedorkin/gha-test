@@ -34,6 +34,7 @@ jobs:
         run: |
           SERVICES=${{ fromJSON(vars.SERVICES_LIST) }}
           echo ${SERVICES}
+          
 
       
 
