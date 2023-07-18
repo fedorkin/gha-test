@@ -8,13 +8,15 @@ jobs:
   my_matrix:
     runs-on: ubuntu-latest
     environment: tofu-test
-    strategy:
-      matrix:
-        service: ${{ fromJSON(toJson(vars.SERVICES_LIST)) }}
+    # strategy:
+    #   matrix:
+    #     service: ${{ fromJSON(toJson(vars.SERVICES_LIST)) }}
     steps:
-      - name: Matrix => (${{ matrix.service }})
-        run: |
-          echo ${{ matrix.service }}
+      - name: echo
+        run: echo ${{ vars.SERVICES_LIST }}
+      # - name: Matrix => (${{ matrix.service }})
+      #   run: |
+      #     echo ${{ matrix.service }}
 
 # jobs:
 #   # ------------------------
