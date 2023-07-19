@@ -15,7 +15,7 @@ jobs:
       - id: set-matrix
         run: |
           echo "services=${{ toJSON(vars.CONFIGS) }}" >> $GITHUB_OUTPUT
-          echo "productKey=${{ secrets.CONFIGS }} | jq -r '.ProductKey'" >> $GITHUB_OUTPUT
+          echo "productKey=$(echo ${{ secrets.CONFIGS }} | jq -r '.ProductKey')" >> $GITHUB_OUTPUT
   job15:
     needs: job1
     runs-on: ubuntu-latest
