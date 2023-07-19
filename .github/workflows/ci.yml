@@ -57,7 +57,7 @@ jobs:
           echo "The current tag is: ${{ steps.taggerDryRun.outputs.tag }}"
       - name: echo part
         run: |
-          echo "The version  increment was: ${{ steps.taggerDryRun.outputs.part }}"
+          echo "The version increment was: ${{ steps.taggerDryRun.outputs.part }}"
 
       - name: Release
         uses: softprops/action-gh-release@v1
