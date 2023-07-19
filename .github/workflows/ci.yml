@@ -1,12 +1,7 @@
 name: Dispatch Listener
 
 on:
-  pull_request:
-    types:
-      - closed
-    branches:
-      - master
-      - gha-test
+  push:
 
 concurrency: production
 
