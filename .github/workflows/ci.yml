@@ -32,17 +32,15 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Download artefacts
+      - name: Download all artefacts
         uses: actions/download-artifact@v3
-
-      - run: ls -R
-
+      - name: Zip artefacts
+        run: zip -r artefacts.zip ./
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: "release.v1.0.0"
-          files: |
-            path1/my_file.txt
+          files: artefacts.zip
           fail_on_unmatched_files: true
 
   # job1:
