@@ -21,7 +21,11 @@ jobs:
         service: ${{ fromJSON(needs.job1.outputs.services) }}
     steps:
       - run: echo ${{ matrix.service }}
-
+  createRelease:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release
+        uses: softprops/action-gh-release@v1
 
 
 # jobs:
