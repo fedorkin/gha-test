@@ -17,7 +17,7 @@ jobs:
     needs: job1
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ fromJSON(needs.job1.outputs.services).ProductKey }}
+      - run: echo ${{ fromJSON(needs.job1.outputs.services) }}.ProductKey
   job2:
     needs: job15
     runs-on: ubuntu-latest
