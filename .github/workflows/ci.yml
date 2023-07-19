@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: 
-        service: ${{ fromJSON(needs.job1.outputs.configs.EnabledApisName) }}
+        service: ${{ fromJSON(needs.job1.outputs.configs).EnabledApisName }}
     steps:
       - run: echo ${{ matrix.service }}
 
