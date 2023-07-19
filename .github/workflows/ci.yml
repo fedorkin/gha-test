@@ -9,18 +9,35 @@ jobs:
     runs-on: ubuntu-latest
     environment: tofu-test
     outputs:
-      configs: ${{ steps.set-matrix.outputs.configs }}
+      services: ${{ steps.set-matrix.outputs.services }}
     steps:
       - id: set-matrix
-        run: echo "configs=${{ toJSON(vars.CONFIGS) }}" >> $GITHUB_OUTPUT
+        run: echo "services=${{ toJSON(vars.CONFIGS.EnabledApisName) }}" >> $GITHUB_OUTPUT
   job2:
     needs: job1
     runs-on: ubuntu-latest
     strategy:
       matrix: 
-        service: ${{ fromJSON(needs.job1.outputs.configs).EnabledApisName }}
+        service: ${{ fromJSON(needs.job1.outputs.services) }}
     steps:
       - run: echo ${{ matrix.service }}
+      
+  # job1:
+  #   runs-on: ubuntu-latest
+  #   environment: tofu-test
+  #   outputs:
+  #     services: ${{ steps.set-matrix.outputs.services }}
+  #   steps:
+  #     - id: set-matrix
+  #       run: echo "services=${{ toJSON(vars.SERVICES_LIST) }}" >> $GITHUB_OUTPUT
+  # job2:
+  #   needs: job1
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix: 
+  #       service: ${{ fromJSON(needs.job1.outputs.services) }}
+  #   steps:
+  #     - run: echo ${{ matrix.service }}
 
 
 
