@@ -11,8 +11,8 @@ jobs:
     steps:
       - name: Create file
         run: |
-          mkdir -r otput/path1
-          mkdir -r otput/path2
+          mkdir -p otput/path1
+          mkdir -p otput/path2
           echo "text1" > output/path1/my_file.txt
           echo "text2" > output/path2/my_file.txt
       - name: Upload my_artifact1
