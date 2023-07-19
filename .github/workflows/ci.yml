@@ -12,7 +12,7 @@ jobs:
       services: ${{ steps.set-matrix.outputs.services }}
     steps:
       - id: set-matrix
-        run: echo "services=${{ toJSON(fromJson(vars.CONFIGS).EnabledApisName) }}" >> $GITHUB_OUTPUT
+        run: echo "services=${{ toJSON(vars.CONFIGS.EnabledApisName) }}" >> $GITHUB_OUTPUT
   job2:
     needs: job1
     runs-on: ubuntu-latest
