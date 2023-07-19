@@ -19,12 +19,12 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: my_artifact1
-          path: output
+          path: output/path1
       - name: Upload my_artifact2
         uses: actions/upload-artifact@v3
         with:
           name: my_artifact2
-          path: output
+          path: output/path2
 
   createRelease:
     runs-on: ubuntu-latest
