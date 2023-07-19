@@ -42,7 +42,8 @@ jobs:
           tag_name: "release.v1.0.0"
           files: artefacts.zip
           fail_on_unmatched_files: true
-          
+          prerelease: true
+
   # job1:
   #   runs-on: ubuntu-latest
   #   environment: tofu-test
