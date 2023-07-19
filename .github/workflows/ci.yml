@@ -11,20 +11,20 @@ jobs:
     steps:
       - name: Create file
         run: |
-          mkdir path1
-          mkdir path2
-          echo "text1" > path1/my_file.txt
-          echo "text2" > path2/my_file.txt
+          mkdir -r otput/path1
+          mkdir -r otput/path2
+          echo "text1" > output/path1/my_file.txt
+          echo "text2" > output/path2/my_file.txt
       - name: Upload my_artifact1
         uses: actions/upload-artifact@v3
         with:
           name: my_artifact1
-          path: path1
+          path: output
       - name: Upload my_artifact2
         uses: actions/upload-artifact@v3
         with:
           name: my_artifact2
-          path: path2
+          path: output
 
   createRelease:
     runs-on: ubuntu-latest
@@ -41,7 +41,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: my_artifact2
-          
+
       - run: ls
 
       - name: Release
