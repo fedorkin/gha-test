@@ -10,42 +10,17 @@ jobs:
     environment: tofu-test
     outputs:
       services: ${{ steps.set-matrix.outputs.services }}
-      productKey: ${{ steps.set-matrix.outputs.productKey }}
     steps:
       - id: set-matrix
-        run: |
-          echo "services=${{ toJSON(vars.CONFIGS) }}" >> $GITHUB_OUTPUT
-          echo "productKey=$(echo ${{ secrets.CONFIGS }} | jq -r '.ProductKey')" >> $GITHUB_OUTPUT
-  job15:
-    needs: job1
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo ${{ needs.job1.outputs.productKey }}
+        run: echo "services=${{ toJSON(vars.SERVICES_LIST) }}" >> $GITHUB_OUTPUT
   job2:
-    needs: job15
+    needs: job1
     runs-on: ubuntu-latest
     strategy:
       matrix: 
         service: ${{ fromJSON(needs.job1.outputs.services) }}
     steps:
       - run: echo ${{ matrix.service }}
-
-  # job1:
-  #   runs-on: ubuntu-latest
-  #   environment: tofu-test
-  #   outputs:
-  #     services: ${{ steps.set-matrix.outputs.services }}
-  #   steps:
-  #     - id: set-matrix
-  #       run: echo "services=${{ toJSON(vars.SERVICES_LIST) }}" >> $GITHUB_OUTPUT
-  # job2:
-  #   needs: job1
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix: 
-  #       service: ${{ fromJSON(needs.job1.outputs.services) }}
-  #   steps:
-  #     - run: echo ${{ matrix.service }}
 
 
 
