@@ -63,7 +63,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ steps.taggerDryRun.outputs.new_tag }}
+          tag_name: ${{ steps.taggerDryRun.outputs.tag }}
           files: artefacts.zip
           fail_on_unmatched_files: true
           # prerelease: true
