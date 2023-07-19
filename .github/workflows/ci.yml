@@ -1,30 +1,82 @@
-# This is a basic workflow to help you get started with Actions
+name: Dispatch Listener
 
-name: CI
-
-# Controls when the workflow will run
-on: 
+on:
   push:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  # push:
-  #   branches: [ "main" ]
-  # pull_request:
-  #   branches: [ "main" ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  # workflow_dispatch:
+concurrency: production
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  job1:
+    runs-on: ubuntu-latest
+    environment: tofu-test
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - name: Create file
+        run: |
+          mkdir -p output/path1
+          mkdir -p output/path2
+          echo "text1" > output/path1/my_file.txt
+          echo "text2" > output/path2/my_file.txt
+      - name: Upload my_artifact1
+        uses: actions/upload-artifact@v3
+        with:
+          name: my_artifact1
+          path: output/path1
+      - name: Upload my_artifact2
+        uses: actions/upload-artifact@v3
+        with:
+          name: my_artifact2
+          path: output/path2
+
+  createRelease:
+    runs-on: ubuntu-latest
+    needs: [job1]
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artefacts
+        uses: actions/download-artifact@v3
+      - name: Zip artefacts
+        run: zip -r artefacts.zip ./
 
       - name: Echo connection string from secretss
         run: echo "${GITHUB_REF} ${{ secrets.DB_CONNECTION_STRING }}"
+
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          dry_run: true
+
+      - name: echo new tag
+        run: |
+          echo "The next tag version will be: ${{ steps.tag_version.outputs.new_tag }}"
+      - name: echo tag
+        run: |
+          echo "The current  tag is: ${{ steps.tag_version.outputs.previous_tag }}"
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag}}
+          files: artefacts.zip
+          fail_on_unmatched_files: true
+          # prerelease: true
+
+  # job1:
+  #   runs-on: ubuntu-latest
+  #   environment: tofu-test
+  #   outputs:
+  #     services: ${{ steps.set-matrix.outputs.services }}
+  #   steps:
+  #     - id: set-matrix
+  #       run: echo "services=${{ toJSON(vars.SERVICES_LIST) }}" >> $GITHUB_OUTPUT
+  # job2:
+  #   needs: job1
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix: 
+  #       service: ${{ fromJSON(needs.job1.outputs.services) }}
+  #   steps:
+  #     - run: echo ${{ matrix.service }}
