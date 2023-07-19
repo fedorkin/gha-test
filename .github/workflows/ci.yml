@@ -35,7 +35,7 @@ jobs:
       - name: Download artefacts
         uses: actions/download-artifact@v3
 
-      - run: ls
+      - run: ls -R
 
       - name: Release
         uses: softprops/action-gh-release@v1
