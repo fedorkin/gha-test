@@ -48,6 +48,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: "release.v1.0.0"
+          files: |
+            path1
+            path2
 
   # job1:
   #   runs-on: ubuntu-latest
