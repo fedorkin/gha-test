@@ -3,6 +3,8 @@ name: Dispatch Listener
 on:
   push:
 
+concurrency: production
+
 jobs:
 
   job1:
@@ -36,10 +38,21 @@ jobs:
         uses: actions/download-artifact@v3
       - name: Zip artefacts
         run: zip -r artefacts.zip ./
+
+      - name: Minor version for each merge
+        id: taggerDryRun
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          DRY_RUN: true
+          PRERELEASE: true
+          DEFAULT_BUMP: patch
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: "release.v1.0.0"
+          tag_name: ${{ steps.taggerDryRun.outputs.new_tag }}
           files: artefacts.zip
           fail_on_unmatched_files: true
           prerelease: true
