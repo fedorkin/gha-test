@@ -1,34 +1,31 @@
 name: CD
 
-on:
-  workflow_run:
-    workflows: ["CI"]
-    types:
-      - completed
-
 # on:
-#   workflow_dispatch:
-#     inputs:
-#       environment:
-#         description: 'Environment to run tests against'
-#         type: environment
-#         required: true
+#   workflow_run:
+#     workflows: ["CI"]
+#     types:
+#       - completed
 
-env:
-  ARTIFACT_NAME: artifact
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run tests against'
+        type: environment
+        required: true
 
 jobs:
   deploy:
     runs-on: ubuntu-20.04
     environment: tofu-test
     steps:
-      # - name: Download artifact
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: ${{ env.ARTIFACT_NAME }}
+      - uses: robinraju/release-downloader@v1.8
+        with:
+          latest: true
+          fileName: artefacts.zip
           
       - name: Display structure of downloaded files
         run: ls -R
       
-      - name: Echo connection string from secrets
-        run: echo "${GITHUB_REF} ${{ secrets.DB_CONNECTION_STRING }}"
+      # - name: Echo connection string from secrets
+      #   run: echo "${GITHUB_REF} ${{ secrets.DB_CONNECTION_STRING }}"
