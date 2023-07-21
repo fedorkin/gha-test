@@ -1,4 +1,4 @@
-name: Dispatch Listener
+name: CI
 
 on:
   push:
