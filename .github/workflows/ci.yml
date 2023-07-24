@@ -8,7 +8,7 @@ on:
 
 env:
   IS_PUBLISH: ${{ github.event_name != 'pull_request' }}
-  IS_RELEASE: ${{ github.event_name == 'push' && contains('master develop', github.ref)  }}
+  IS_RELEASE: ${{ github.event_name == 'push' && contains('refs/heads/master refs/heads/develop', github.ref)  }}
 
 concurrency: production
 
