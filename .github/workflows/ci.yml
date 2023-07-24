@@ -7,8 +7,8 @@ on:
     branches: [ "master", "develop" ]
 
 env:
-  IS_PUBLISH: ${{ github.event_name != 'pull_request' }}
-  IS_RELEASE: ${{ github.event_name == 'push' && contains('refs/heads/master refs/heads/develop', github.ref)  }}
+  IS_PUBLISH_ARTEFACTS: ${{ github.event_name != 'pull_request' }}
+  IS_PRERELEASE: ${{ github.event_name == 'push' && endsWith('develop', github.ref)  }}
 
 concurrency: production
 
@@ -20,8 +20,8 @@ jobs:
     steps:
       - name: Envs
         run: |
-          echo "${{ env.IS_PUBLISH }}"
-          echo "${{ env.IS_RELEASE }}"
+          echo "${{ env.IS_PUBLISH_ARTEFACTS }}"
+          echo "${{ env.IS_PRERELEASE }}"
           echo "${{ github.event_name }}"
           echo "${{ github.ref }}"
       - name: Create file
@@ -47,6 +47,10 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Is need Release
+        if: ${{ env.IS_PUBLISH_ARTEFACTS }}
+        run: echo "Start release"
+
       - name: Download all artefacts
         uses: actions/download-artifact@v3
       - name: Zip artefacts
@@ -58,7 +62,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           dry_run: true
-          custom_release_rules: patch:patch,minort:minor,major:major
+          pre_release_branches: develop
 
       - name: echo new tag
         run: |
@@ -73,7 +77,7 @@ jobs:
           tag_name: ${{ steps.tag_version.outputs.new_tag}}
           files: artefacts.zip
           fail_on_unmatched_files: true
-          # prerelease: true
+          prerelease: $IS_PRERELEASE
 
   # job1:
   #   runs-on: ubuntu-latest
