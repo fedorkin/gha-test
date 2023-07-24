@@ -48,7 +48,7 @@ jobs:
       contents: write
     steps:
       - name: Is need Release
-        if: ${{ env.IS_PUBLISH_ARTEFACTS }}
+        if: ${{ !env.IS_PUBLISH_ARTEFACTS }}
         run: echo "Start release"
 
       - name: Download all artefacts
