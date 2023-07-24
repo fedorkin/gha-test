@@ -19,7 +19,11 @@ jobs:
     environment: tofu-test
     steps:
       - name: Envs
-        run: echo ${{ toJson(env) }}
+        run: |
+          echo "${{ env.IS_PUBLISH }}"
+          echo "${{ env.IS_RELEASE }}"
+          echo "${{ github.event_name }}"
+          echo "${{ github.ref }}"
       - name: Create file
         run: |
           mkdir -p output/path1
