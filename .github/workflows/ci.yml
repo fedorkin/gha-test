@@ -2,6 +2,13 @@ name: CI
 
 on:
   push:
+    branches: [ "master", "develop" ]
+  pull_request:
+    branches: [ "master", "develop" ]
+
+env:
+  IS_PUBLISH: ${{ github.event_name != 'pull_request' }}
+  IS_RELEASE: ${{ github.event_name == 'push' && contains('master develop', github.ref)  }}
 
 concurrency: production
 
@@ -11,6 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: tofu-test
     steps:
+      - name: Envs
+        run: echo ${{ toJson(env) }}
       - name: Create file
         run: |
           mkdir -p output/path1
