@@ -8,7 +8,7 @@ on:
 
 env:
   IS_PUBLISH_ARTEFACTS: ${{ github.event_name != 'pull_request' }}
-  IS_PRERELEASE: ${{ github.event_name == 'push' && endsWith('develop', github.ref)  }}
+  IS_PRERELEASE: ${{ github.event_name == 'push' && endsWith(github.ref, 'develop')  }}
 
 concurrency: production
 
