@@ -26,15 +26,29 @@ jobs:
         run: |
           echo "branch: ${{ github.base_ref }}"
           echo "sha: ${{ github.sha }}"
-      - uses: cardinalby/git-get-release-action@v1
-        id: getByTag
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+
+      - uses: ericcornelissen/git-tag-annotation-action@v2
+        id: tag-data
         with:
           tag: ${{ inputs.release }}
-      - name: Release Info
+      - name: Tag Info
         run: |
-          echo ${{ toJSON(steps.getByTag.outputs)}}
+          echo "${{ toJSON(steps.tag-data.outputs) }}"
+
+      # - uses: cardinalby/git-get-release-action@v1
+      #   id: getByTag
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
+      #   with:
+      #     tag: ${{ inputs.release }}
+      # - name: Release Info
+      #   run: |
+      #     echo ${{ toJSON(steps.getByTag.outputs) }}
+
+
+
+
+
       # - uses: robinraju/release-downloader@v1.8
       #   with:
       #     tag: ${{ inputs.release }}
