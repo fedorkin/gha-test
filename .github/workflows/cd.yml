@@ -22,18 +22,14 @@ jobs:
     runs-on: ubuntu-20.04
     environment: ${{ inputs.environment }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Fetch tags
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.release }}
+      - name: Info
         run: |
-          git fetch --tags
-
-      - name: Find branch
-        run: |
-          COMMIT=$(git rev-list -n 1 ${{ inputs.release }})
-          BRANCH_NAME=$(git branch -a --contains $COMMIT)
-          echo "Release ${{ inputs.release }} is based on commit $COMMIT from branch $BRANCH_NAME"
+          echo "${GITHUB_SHA}"
+          echo "${GITHUB_REF}"
+          echo "${GITHUB_HEAD_REF}"
 
       # - uses: cardinalby/git-get-release-action@v1
       #   id: getByTag

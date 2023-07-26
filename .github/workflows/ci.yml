@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: tofu-test
     steps:      
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Get branch name and commit hash
         run: |
           echo "branch=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
