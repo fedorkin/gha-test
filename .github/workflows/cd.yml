@@ -25,6 +25,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Fetch tags
+        run: |
+          git fetch --tags
+
       - name: Find branch
         run: |
           COMMIT=$(git rev-list -n 1 ${{ inputs.release }})
