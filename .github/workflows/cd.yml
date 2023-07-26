@@ -22,13 +22,17 @@ jobs:
     runs-on: ubuntu-20.04
     environment: ${{ inputs.environment }}
     steps:
-      - uses: robinraju/release-downloader@v1.8
-        with:
-          tag: ${{ inputs.release }}
-          fileName: artefacts.zip
+      - name: SHA
+        run: |
+          echo "branch: ${{ github.base_ref }}"
+          echo "sha: ${{ github.sha }}"
+      # - uses: robinraju/release-downloader@v1.8
+      #   with:
+      #     tag: ${{ inputs.release }}
+      #     fileName: artefacts.zip
           
-      - name: Display structure of downloaded files
-        run: ls -R
+      # - name: Display structure of downloaded files
+      #   run: ls -R
       
-      - name: Echo connection string from secrets
-        run: echo "${GITHUB_REF} ${{ secrets.DB_CONNECTION_STRING }}"
+      # - name: Echo connection string from secrets
+      #   run: echo "${GITHUB_REF} ${{ secrets.DB_CONNECTION_STRING }}"
