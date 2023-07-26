@@ -26,6 +26,15 @@ jobs:
         run: |
           echo "branch: ${{ github.base_ref }}"
           echo "sha: ${{ github.sha }}"
+      - uses: cardinalby/git-get-release-action@v1
+        id: getByTag
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          tag: ${{ inputs.release }}
+      - name: Release Info
+        run: |
+          echo ${{ toJSON(steps.getByTag.outputs)}}
       # - uses: robinraju/release-downloader@v1.8
       #   with:
       #     tag: ${{ inputs.release }}
