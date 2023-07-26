@@ -32,7 +32,7 @@ jobs:
       - name: Find branch
         run: |
           COMMIT=$(git rev-list -n 1 ${{ inputs.release }})
-          BRANCH_NAME=$(git branch -r --contains $COMMIT)
+          BRANCH_NAME=$(git branch -a --contains $COMMIT)
           echo "Release ${{ inputs.release }} is based on commit $COMMIT from branch $BRANCH_NAME"
 
       # - uses: cardinalby/git-get-release-action@v1
