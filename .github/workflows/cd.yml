@@ -22,18 +22,13 @@ jobs:
     runs-on: ubuntu-20.04
     environment: ${{ inputs.environment }}
     steps:
-      - name: SHA
-        run: |
-          echo "branch: ${{ github.base_ref }}"
-          echo "sha: ${{ github.sha }}"
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - uses: ericcornelissen/git-tag-annotation-action@v2
-        id: tag-data
-        with:
-          tag: ${{ inputs.release }}
-      - name: Tag Info
+      - name: Find branch
         run: |
-          echo "${{ toJSON(steps.tag-data.outputs) }}"
+          BRANCH_NAME=$(git branch --contains ${{ inputs.release }})
+          echo "Release ${{ inputs.release }} belongs to branch $BRANCH_NAME"
 
       # - uses: cardinalby/git-get-release-action@v1
       #   id: getByTag
