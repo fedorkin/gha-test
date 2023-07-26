@@ -10,23 +10,22 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     environment: tofu-test
-    steps:
-      - name: Create file
+    steps:      
+      - name: Get branch name and commit hash
         run: |
-          mkdir -p output/path1
-          mkdir -p output/path2
-          echo "text1" > output/path1/my_file.txt
-          echo "text2" > output/path2/my_file.txt
-      - name: Upload my_artifact1
+          echo "branch=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
+          echo "commit=$(git rev-parse HEAD)" >> $GITHUB_ENV
+
+      - name: Save to JSON
+        run: |
+          echo '{"branch":"${{ env.branch }}","commit":"${{ env.commit }}"}' > info.json
+
+      - name: Archive JSON
         uses: actions/upload-artifact@v3
         with:
-          name: my_artifact1
-          path: output/path1
-      - name: Upload my_artifact2
-        uses: actions/upload-artifact@v3
-        with:
-          name: my_artifact2
-          path: output/path2
+          name: release-info
+          path: info.json
+          if-no-files-found: error 
 
   createRelease:
     runs-on: ubuntu-latest
