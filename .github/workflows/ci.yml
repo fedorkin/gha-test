@@ -51,14 +51,14 @@ jobs:
     needs: Configs
     if: ${{ needs.Configs.outputs.isRelease }}
     steps:
-      - run: echo "isRelease"
+      - run: echo "isRelease:${{ needs.Configs.outputs.isRelease }}"
 
   PrereleaseJob:
     runs-on: ubuntu-20.04
     needs: Configs
     if: ${{ needs.Configs.outputs.isPrerelease }}
     steps:
-      - run: echo "isPrerelease"
+      - run: echo "isPrerelease:${{ needs.Configs.outputs.isPrerelease }}"
       
   # job1:
   #   runs-on: ubuntu-latest
