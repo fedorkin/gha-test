@@ -2,11 +2,17 @@ name: Dispatch Listener
 
 on:
   push:
+    branches:
+      - main
+      - develop
   pull_request:
+    branches:
+      - main
+      - develop
 
 env:
-  RELEASE_BRANCHES: ("develop")
-  PRERELEASE_BRANCHES: ("mains", "SUBZ-185-ci-gha")
+  RELEASE_BRANCHES: '["develop"]'
+  PRERELEASE_BRANCHES: '["SUBZ-185-ci-gha", "mains"]'
 
 concurrency: production
 
@@ -33,12 +39,12 @@ jobs:
       - name: Is Release
         id: isRelease
         run: |
-          value=${{ steps.isPush.outputs.value == 'true' && contains(env.RELEASE_BRANCHES, steps.branchName.outputs.value) }}
+          value=${{ steps.isPush.outputs.value == 'true' && contains(fromJson(env.RELEASE_BRANCHES), steps.branchName.outputs.value) }}
           echo "value=$value" >> $GITHUB_OUTPUT
       - name: Is Prerelease
         id: isPrerelease
         run: |
-          value=${{ steps.isPush.outputs.value == 'true' && contains(env.PRERELEASE_BRANCHES, steps.branchName.outputs.value) }}
+          value=${{ steps.isPush.outputs.value == 'true' && contains(fromJson(env.PRERELEASE_BRANCHES), steps.branchName.outputs.value) }}
           echo "value=$value" >> $GITHUB_OUTPUT
       - name: Is publish
         id: isPublish
