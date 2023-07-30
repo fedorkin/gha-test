@@ -33,17 +33,17 @@ jobs:
       - name: Is Release
         id: isRelease
         run: |
-          value=${{ steps.isPush.outputs.value && contains(env.RELEASE_BRANCHES, steps.branchName.outputs.value) }}
+          value=${{ steps.isPush.outputs.value == 'true' && contains(env.RELEASE_BRANCHES, steps.branchName.outputs.value) }}
           echo "value=$value" >> $GITHUB_OUTPUT
       - name: Is Prerelease
         id: isPrerelease
         run: |
-          value=${{ steps.isPush.outputs.value && contains(env.PRERELEASE_BRANCHES, steps.branchName.outputs.value) }}
+          value=${{ steps.isPush.outputs.value == 'true' && contains(env.PRERELEASE_BRANCHES, steps.branchName.outputs.value) }}
           echo "value=$value" >> $GITHUB_OUTPUT
       - name: Is publish
         id: isPublish
         run: |
-          value=${{ steps.isRelease.outputs.value || steps.isPrerelease.outputs.value }}
+          value=${{ steps.isRelease.outputs.value == 'true' || steps.isPrerelease.outputs.value == 'true' }}
           echo "value=$value" >> $GITHUB_OUTPUT
 
   ReleaseJob:
