@@ -6,7 +6,7 @@ on:
   pull_request:
 
 env:
-  RELEASE_BRANCHES: "main"
+  RELEASE_BRANCHES: main
   PRERELEASE_BRANCHES: ("develop", "SUBZ-185-ci-gha")
 
 concurrency: production
