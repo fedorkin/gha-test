@@ -73,8 +73,10 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Set PRERELEASE_BRANCHES
-        id: set-branches
+      - id: set-release-branches
+        run: echo "releaseBranches=${{ env.RELEASE_BRANCHES }}" | tr -d '[]\" ' >> $GITHUB_OUTPUT
+
+      - id: set-prerelease-branches
         run: echo "prereleaseBranches=${{ env.PRERELEASE_BRANCHES }}" | tr -d '[]\" ' >> $GITHUB_OUTPUT
 
       - name: Bump version
@@ -83,8 +85,8 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           dry_run: true
-          # pre_release_branches: ${{ steps.set-branches.outcome.prereleaseBranches}}
-          pre_release_branches: SUBZ-185-ci-gha,main
+          release_branches: ${{ steps.set-release-branches.outcome.releaseBranches }}
+          pre_release_branches: ${{ steps.set-prerelease-branches.outcome.prereleaseBranches }}
 
       - name: echo new tag
         run: |
