@@ -2,6 +2,8 @@ name: Dispatch Listener
 
 on:
   push:
+    branches: env.RELEASE_BRANCHES
+  pull_request:
 
 env:
   RELEASE_BRANCHES: ("main")
@@ -18,22 +20,29 @@ jobs:
       isRelease: ${{ steps.isRelease.outputs.value }}
       isPrerelease: ${{ steps.isPrerelease.outputs.value }}
     steps:
-      - id: branchName
+      - name: Branch name
+        id: branchName
         run: |
-          echo "value=$(basename ${GITHUB_REF})" >> $GITHUB_OUTPUT
-      - id: isPush
+          value=$(basename ${GITHUB_REF})
+          echo $value
+          echo "value=$value" >> $GITHUB_OUTPUT
+      - name: Is push
+        id: isPush
         run: |
           value=${{ github.event_name == 'push'}}
           echo "value=$value" >> $GITHUB_OUTPUT
-      - id: isRelease
+      - name: Is Release
+        id: isRelease
         run: |
           value=${{ steps.isPush.outputs.value && contains(env.RELEASE_BRANCHES, steps.branchName.outputs.value) }}
           echo "value=$value" >> $GITHUB_OUTPUT
-      - id: isPrerelease
+      - name: Is Prerelease
+        id: isPrerelease
         run: |
           value=${{ steps.isPush.outputs.value && contains(env.PRERELEASE_BRANCHES, steps.branchName.outputs.value) }}
           echo "value=$value" >> $GITHUB_OUTPUT
-      - id: isPublish
+      - name: Is publish
+        id: isPublish
         run: |
           value=${{ steps.isRelease.outputs.value || steps.isPrerelease.outputs.value }}
           echo "value=$value" >> $GITHUB_OUTPUT
