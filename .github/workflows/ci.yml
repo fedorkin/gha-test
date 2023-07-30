@@ -21,23 +21,23 @@ jobs:
       - id: branchName
         run: |
           value=$(basename ${GITHUB_REF})
-          echo "value=$value=" >> $GITHUB_OUTPUT
+          echo "value=$value" >> $GITHUB_OUTPUT
       - id: isPush
         run: |
           value=${{ github.event_name == 'push'}}
-          echo "value=$value=" >> $GITHUB_OUTPUT
+          echo "value=$value" >> $GITHUB_OUTPUT
       - id: isRelease
         run: |
           value=${{ steps.isPush.outputs.value && contains(env.RELEASE_BRANCHES, steps.branchName.outputs.value) }}
-          echo "value=$value=" >> $GITHUB_OUTPUT
+          echo "value=$value" >> $GITHUB_OUTPUT
       - id: isPrerelease
         run: |
           value=${{ steps.isPush.outputs.value && contains(env.PRERELEASE_BRANCHES, steps.branchName.outputs.value) }}
-          echo "value=$value=" >> $GITHUB_OUTPUT
+          echo "value=$value" >> $GITHUB_OUTPUT
       - id: isPublish
         run: |
           value=${{ steps.isRelease.outputs.value || steps.isPrerelease.outputs.value }}
-          echo "value=$value=" >> $GITHUB_OUTPUT
+          echo "value=$value" >> $GITHUB_OUTPUT
       
   # job1:
   #   runs-on: ubuntu-latest
