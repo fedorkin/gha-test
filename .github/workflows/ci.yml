@@ -5,8 +5,8 @@ on:
   pull_request:
 
 env:
-  RELEASE_BRANCHES: ("develop")
-  PRERELEASE_BRANCHES: ("main", "SUBZ-185-ci-gha")
+  RELEASE_BRANCHES: develop
+  PRERELEASE_BRANCHES: main,SUBZ-185-ci-gha
 
 concurrency: production
 
