@@ -19,15 +19,25 @@ jobs:
       isPrerelease: ${{ steps.isPrerelease.outputs.value }}
     steps:
       - id: branchName
-        run: echo "value=$(basename ${GITHUB_REF})" >> $GITHUB_OUTPUT
+        run: |
+          value=$(basename ${GITHUB_REF})
+          echo "value=$value=" >> $GITHUB_OUTPUT
       - id: isPush
-        run: echo "value=${{ github.event_name == 'push'}}" >> $GITHUB_OUTPUT
+        run: |
+          value=${{ github.event_name == 'push'}}
+          echo "value=$value=" >> $GITHUB_OUTPUT
       - id: isRelease
-        run: echo "value=${{ steps.isPush.outputs.value && contains(env.RELEASE_BRANCHES, steps.branchName.outputs.value) }}" >> $GITHUB_OUTPUT
+        run: |
+          value=${{ steps.isPush.outputs.value && contains(env.RELEASE_BRANCHES, steps.branchName.outputs.value) }}
+          echo "value=$value=" >> $GITHUB_OUTPUT
       - id: isPrerelease
-        run: echo "value=${{ steps.isPush.outputs.value && contains(env.PRERELEASE_BRANCHES, steps.branchName.outputs.value) }}" >> $GITHUB_OUTPUT
+        run: |
+          value=${{ steps.isPush.outputs.value && contains(env.PRERELEASE_BRANCHES, steps.branchName.outputs.value) }}
+          echo "value=$value=" >> $GITHUB_OUTPUT
       - id: isPublish
-        run: echo "value=${{ steps.isRelease.outputs.value || steps.isPrerelease.outputs.value }}" >> $GITHUB_OUTPUT
+        run: |
+          value=${{ steps.isRelease.outputs.value || steps.isPrerelease.outputs.value }}
+          echo "value=$value=" >> $GITHUB_OUTPUT
       
   # job1:
   #   runs-on: ubuntu-latest
