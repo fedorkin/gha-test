@@ -49,14 +49,14 @@ jobs:
   ReleaseJob:
     runs-on: ubuntu-20.04
     needs: Configs
-    if: ${{ needs.Configs.outputs.isRelease }}
+    if: needs.Configs.outputs.isRelease == 'true'
     steps:
       - run: echo "isRelease:${{ needs.Configs.outputs.isRelease }}"
 
   PrereleaseJob:
     runs-on: ubuntu-20.04
     needs: Configs
-    if: ${{ needs.Configs.outputs.isPrerelease }}
+    if: needs.Configs.outputs.isPrerelease == 'true'
     steps:
       - run: echo "isPrerelease:${{ needs.Configs.outputs.isPrerelease }}"
       
