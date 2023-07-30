@@ -4,7 +4,7 @@ on:
   push:
 
 env:
-  RELEASE_BRANCHES: ("master")
+  RELEASE_BRANCHES: ("main")
   PRERELEASE_BRANCHES: ("develop", "SUBZ-185-ci-gha")
 
 concurrency: production
