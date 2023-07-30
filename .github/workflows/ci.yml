@@ -83,7 +83,8 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           dry_run: true
-          pre_release_branches: ${{ steps.set-branches.outcome.prereleaseBranches}}
+          # pre_release_branches: ${{ steps.set-branches.outcome.prereleaseBranches}}
+          pre_release_branches: SUBZ-185-ci-gha,main
 
       - name: echo new tag
         run: |
