@@ -12,7 +12,7 @@ on:
 
 env:
   RELEASE_BRANCHES: '["develop"]'
-  PRERELEASE_BRANCHES: '["SUBZ-185-ci-gha", "mains"]'
+  PRERELEASE_BRANCHES: '["SUBZ-185-ci-gha", "main"]'
 
 concurrency: production
 
@@ -73,13 +73,17 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Set PRERELEASE_BRANCHES
+        id: set-branches
+        run: echo 'prereleaseBranches=${{ env.PRERELEASE_BRANCHES }}' | tr -d '[]\" ' >> $GITHUB_OUTPUT
+
       - name: Bump version
         id: tag-version
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           dry_run: true
-          pre_release_branches: ${{ env.PRERELEASE_BRANCHES }}
+          pre_release_branches: ${{ steps.set-branches.outcome.prereleaseBranches}}
 
       - name: echo new tag
         run: |
