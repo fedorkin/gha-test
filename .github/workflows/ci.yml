@@ -75,7 +75,7 @@ jobs:
     steps:
       - name: Set PRERELEASE_BRANCHES
         id: set-branches
-        run: echo 'prereleaseBranches=${{ env.PRERELEASE_BRANCHES }}' | tr -d '[]\" ' >> $GITHUB_OUTPUT
+        run: echo "prereleaseBranches=${{ env.PRERELEASE_BRANCHES }}" | tr -d '[]\" ' >> $GITHUB_OUTPUT
 
       - name: Bump version
         id: tag-version
@@ -87,15 +87,15 @@ jobs:
 
       - name: echo new tag
         run: |
-          echo "The next taag  version will be: ${{ steps.tag_version.outputs.new_tag }}"
+          echo "The next taag  version will be: ${{ steps.tag-version.outputs.new_tag }}"
       - name: echo tag
         run: |
-          echo "The currenttag is: ${{ steps.tag_version.outputs.previous_tag }}"
+          echo "The currenttag is: ${{ steps.tag-version.outputs.previous_tag }}"
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ steps.tag_version.outputs.new_tag}}
+          tag_name: ${{ steps.tag-version.outputs.new_tag}}
           target_commitish: ${{ github.sha }}
           files: artefacts.zip
           fail_on_unmatched_files: true
