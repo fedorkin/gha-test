@@ -75,10 +75,7 @@ jobs:
     steps:
       - id: set-release-branches
         run: |
-          hello="hello my friend"
-          echo $hello
-          echo "releaseBranches=$hello" >> $GITHUB_OUTPUT
- #         echo 'releaseBranches=${{ env.RELEASE_BRANCHES }}' | tr -d '[]\" ' >> $GITHUB_OUTPUT
+         echo 'releaseBranches=${{ env.RELEASE_BRANCHES }}' | tr -d '[]\" ' >> $GITHUB_OUTPUT
 
       - id: set-prerelease-branches
         run: |
@@ -87,7 +84,6 @@ jobs:
 
       - run: |
           echo "release_branches: ${{ steps.set-release-branches.outputs.releaseBranches }}"
-          echo "release_branches ${{ steps.set-release-branches.outputs.releaseBranches }}"
           echo "pre_release_branches: ${{ steps.set-prerelease-branches.outputs.prereleaseBranches }}"
       - name: Bump version
         id: tag-version
