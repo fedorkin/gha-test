@@ -75,8 +75,7 @@ jobs:
     steps:
       - id: set-release-branches
         run: |
-          releaseBranches=${{ env.RELEASE_BRANCHES }} | tr -d '[]\" '
-          echo "releaseBranches=$releaseBranches" >> $GITHUB_OUTPUT
+          echo 'releaseBranches=${{ env.RELEASE_BRANCHES }}' | tr -d '[]\" ' >> $GITHUB_OUTPUT
 
       - id: set-prerelease-branches
         run: |
