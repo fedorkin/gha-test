@@ -20,8 +20,7 @@ jobs:
     steps:
       - id: branchName
         run: |
-          value=$(basename ${GITHUB_REF})
-          echo "value=$value" >> $GITHUB_OUTPUT
+          echo "value=$(basename ${GITHUB_REF})" >> $GITHUB_OUTPUT
       - id: isPush
         run: |
           value=${{ github.event_name == 'push'}}
