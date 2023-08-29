@@ -18,6 +18,13 @@ concurrency: production
 
 jobs:
 
+  PublicIP:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: showIP
+        run: |
+          curl ifconfig.me
+
   Configs:
     runs-on: ubuntu-20.04
     outputs:
