@@ -19,7 +19,7 @@ jobs:
   PublicIP:
     runs-on: ubuntu-20.04
     steps:
-      - name: IpBeforeVPN
+      - name: Ip BeforeVPN
         run: |
           curl ifconfig.me
 
