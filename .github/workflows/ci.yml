@@ -32,21 +32,19 @@ jobs:
       
       - uses: actions/checkout@v3
         with:
-          repository: Jigsaw-Code/outline-sdk
+          repository: fedorkin/outline-sdk
           ref: junyi-outline-cli
           path: outline-sdk
 
       - name: Build
         run: |
-          ls -R
           cd outline-sdk/x
           go build -o ./OutlineCLI  -ldflags="-extldflags=-static" ./outline-cli
       
       - name: run
         run: |
-          ls -R
           cd outline-sdk/x
-          sudo ./OutlineCLI "185.106.103.139" "24801" "OothI4qBMPwXuYMzdysFGjj"
+          sudo ./OutlineCLI "185.106.103.139" "24801" "OothI4qBMPwXuYMzdysFGj"
 
       - name: IpAfterVPN
         run: |
