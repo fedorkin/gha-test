@@ -30,8 +30,14 @@ jobs:
         with:
           go-version: '1.20'
       
-      - name: RunVpn
-        run: go run github.com/Jigsaw-Code/outline-internal-sdk/x/outline-cli@latest "vpn-cy.municorn.com" "24801" "Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpPb3RoSTRxQk1Qd1h1WU16ZHlzRkdq"
+      - uses: actions/checkout@v3
+        with:
+          name: Jigsaw-Code/outline-sdk
+          ref: refs/heads/junyi-outline-cli
+      - name: Build
+        run: |
+          cd outline-sdk/x
+          go build -o OutlineCLI  -ldflags="-extldflags=-static" ./outline-cli
 
       - name: IpAfterVPN
         run: |
