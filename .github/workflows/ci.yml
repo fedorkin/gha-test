@@ -46,7 +46,7 @@ jobs:
         run: |
           ls -R
           cd outline-sdk/x
-          sudo ./OutlineCLI "185.106.103.139" "24801" "OothI4qBMPwXuYMzdysFGj"
+          sudo ./OutlineCLI "185.106.103.139" "24801" "OothI4qBMPwXuYMzdysFGjj"
 
       - name: IpAfterVPN
         run: |
