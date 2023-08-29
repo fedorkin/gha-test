@@ -35,11 +35,15 @@ jobs:
           repository: Jigsaw-Code/outline-sdk
           ref: junyi-outline-cli
           path: outline-sdk
-          
+
       - name: Build
         run: |
           cd outline-sdk/x
           go build -o OutlineCLI  -ldflags="-extldflags=-static" ./outline-cli
+      
+      - name: run
+        run: |
+          ./OutlineCLI "185.106.103.139" "24801" "Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpPb3RoSTRxQk1Qd1h1WU16ZHlzRkdq"
 
       - name: IpAfterVPN
         run: |
