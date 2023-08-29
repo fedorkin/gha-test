@@ -50,10 +50,10 @@ jobs:
 
       - name: IpAfterVPN
         run: |
-          curl ifconfig.me
+          curl ifconfig.me &
           sleep 10
-          curl ifconfig.me
-    
+          curl ifconfig.me &
+
 
   # Configs:
   #   runs-on: ubuntu-20.04
