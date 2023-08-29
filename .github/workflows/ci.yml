@@ -38,11 +38,13 @@ jobs:
 
       - name: Build
         run: |
+          ls -R
           cd outline-sdk/x
-          go build -o OutlineCLI  -ldflags="-extldflags=-static" ./outline-cli
+          go build -o ./OutlineCLI  -ldflags="-extldflags=-static" ./outline-cli
       
       - name: run
         run: |
+          ls -R
           ./OutlineCLI "185.106.103.139" "24801" "Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpPb3RoSTRxQk1Qd1h1WU16ZHlzRkdq"
 
       - name: IpAfterVPN
