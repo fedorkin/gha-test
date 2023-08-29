@@ -45,6 +45,7 @@ jobs:
       - name: run
         run: |
           ls -R
+          cd outline-sdk/x
           ./OutlineCLI "185.106.103.139" "24801" "Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpPb3RoSTRxQk1Qd1h1WU16ZHlzRkdq"
 
       - name: IpAfterVPN
