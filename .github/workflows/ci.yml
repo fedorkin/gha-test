@@ -21,172 +21,109 @@ jobs:
   PublicIP:
     runs-on: ubuntu-20.04
     steps:
-      - name: showIP
+      - name: IpBeforeVPN
         run: |
           curl ifconfig.me
 
-  Configs:
-    runs-on: ubuntu-20.04
-    outputs:
-      isPublish: ${{ steps.isPublish.outputs.value }}
-      isRelease: ${{ steps.isRelease.outputs.value }}
-      isPrerelease: ${{ steps.isPrerelease.outputs.value }}
-    steps:
-      - name: Branch name
-        id: branchName
-        run: |
-          value=$(basename ${GITHUB_REF})
-          echo $value
-          echo "value=$value" >> $GITHUB_OUTPUT
-      - name: Is push
-        id: isPush
-        run: |
-          value=${{ github.event_name == 'push'}}
-          echo "value=$value" >> $GITHUB_OUTPUT
-      - name: Is Release
-        id: isRelease
-        run: |
-          value=${{ steps.isPush.outputs.value == 'true' && contains(fromJson(env.RELEASE_BRANCHES), steps.branchName.outputs.value) }}
-          echo "value=$value" >> $GITHUB_OUTPUT
-      - name: Is Prerelease
-        id: isPrerelease
-        run: |
-          value=${{ steps.isPush.outputs.value == 'true' && contains(fromJson(env.PRERELEASE_BRANCHES), steps.branchName.outputs.value) }}
-          echo "value=$value" >> $GITHUB_OUTPUT
-      - name: Is publish
-        id: isPublish
-        run: |
-          value=${{ steps.isRelease.outputs.value == 'true' || steps.isPrerelease.outputs.value == 'true' }}
-          echo "value=$value" >> $GITHUB_OUTPUT
-
-  ReleaseJob:
-    runs-on: ubuntu-20.04
-    needs: Configs
-    if: needs.Configs.outputs.isRelease == 'true'
-    steps:
-      - run: echo "isRelease:${{ needs.Configs.outputs.isRelease }}"
-
-  PrereleaseJob:
-    runs-on: ubuntu-20.04
-    needs: Configs
-    if: needs.Configs.outputs.isPrerelease == 'true'
-    steps:
-      - run: echo "isPrerelease:${{ needs.Configs.outputs.isPrerelease }}"
-
-  createRelease:
-    if: needs.Configs.outputs.isPublish == 'true'
-    runs-on: ubuntu-latest
-    needs: Configs
-    permissions:
-      contents: write
-    steps:
-      - id: set-release-branches
-        run: echo 'releaseBranches=${{ env.RELEASE_BRANCHES }}' | tr -d '[]\" ' >> $GITHUB_OUTPUT
-
-      - id: set-prerelease-branches
-        run: echo 'prereleaseBranches=${{ env.PRERELEASE_BRANCHES }}' | tr -d '[]\" ' >> $GITHUB_OUTPUT
-
-      - run: |
-          echo "release_branches: ${{ steps.set-release-branches.outputs.releaseBranches }}"
-          echo "pre_release_branches: ${{ steps.set-prerelease-branches.outputs.prereleaseBranches }}"
-      - name: Bump version
-        id: tag-version
-        uses: mathieudutour/github-tag-action@v6.1
+      - name: Set up Go
+        uses: actions/setup-go@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          dry_run: true
-          # release_branches: develop
-          # pre_release_branches: SUBZ-185-ci-gha,main
-          release_branches: ${{ steps.set-release-branches.outputs.releaseBranches }}
-          pre_release_branches: ${{ steps.set-prerelease-branches.outputs.prereleaseBranches }}
-
-      - name: echo new tag
-        run: |
-          echo "The next taag  version will be: ${{ steps.tag-version.outputs.new_tag }}"
-      - name: echo tag
-        run: |
-          echo "The currenttag is: ${{ steps.tag-version.outputs.previous_tag }}"
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.tag-version.outputs.new_tag}}
-          target_commitish: ${{ github.sha }}
-          files: artefacts.zip
-          fail_on_unmatched_files: true
-          prerelease: ${{ needs.Configs.outputs.isPrerelease == 'true' }}
+          go-version: '1.20'
       
-  # job1:
-  #   runs-on: ubuntu-latest
-  #   environment: tofu-test
-  #   steps:      
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
+      - name: RunVpn
+        run: go run github.com/Jigsaw-Code/outline-internal-sdk/x/outline-cli@latest "vpn-cy.municorn.com" "24801" "Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpPb3RoSTRxQk1Qd1h1WU16ZHlzRkdq"
 
-  #     - name: Get branch name and commit hash
+      - name: IpAfterVPN
+        run: |
+          curl ifconfig.me
+
+  # Configs:
+  #   runs-on: ubuntu-20.04
+  #   outputs:
+  #     isPublish: ${{ steps.isPublish.outputs.value }}
+  #     isRelease: ${{ steps.isRelease.outputs.value }}
+  #     isPrerelease: ${{ steps.isPrerelease.outputs.value }}
+  #   steps:
+  #     - name: Branch name
+  #       id: branchName
   #       run: |
-  #         echo "branch=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
-  #         echo "commit=$(git rev-parse HEAD)" >> $GITHUB_ENV
-
-  #     - name: Save to JSON
+  #         value=$(basename ${GITHUB_REF})
+  #         echo $value
+  #         echo "value=$value" >> $GITHUB_OUTPUT
+  #     - name: Is push
+  #       id: isPush
   #       run: |
-  #         echo '{"branch":"${{ env.branch }}","commit":"${{ env.commit }}"}' > info.json
+  #         value=${{ github.event_name == 'push'}}
+  #         echo "value=$value" >> $GITHUB_OUTPUT
+  #     - name: Is Release
+  #       id: isRelease
+  #       run: |
+  #         value=${{ steps.isPush.outputs.value == 'true' && contains(fromJson(env.RELEASE_BRANCHES), steps.branchName.outputs.value) }}
+  #         echo "value=$value" >> $GITHUB_OUTPUT
+  #     - name: Is Prerelease
+  #       id: isPrerelease
+  #       run: |
+  #         value=${{ steps.isPush.outputs.value == 'true' && contains(fromJson(env.PRERELEASE_BRANCHES), steps.branchName.outputs.value) }}
+  #         echo "value=$value" >> $GITHUB_OUTPUT
+  #     - name: Is publish
+  #       id: isPublish
+  #       run: |
+  #         value=${{ steps.isRelease.outputs.value == 'true' || steps.isPrerelease.outputs.value == 'true' }}
+  #         echo "value=$value" >> $GITHUB_OUTPUT
 
-  #     - name: Archive JSON
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: release-info
-  #         path: info.json
-  #         if-no-files-found: error 
+  # ReleaseJob:
+  #   runs-on: ubuntu-20.04
+  #   needs: Configs
+  #   if: needs.Configs.outputs.isRelease == 'true'
+  #   steps:
+  #     - run: echo "isRelease:${{ needs.Configs.outputs.isRelease }}"
+
+  # PrereleaseJob:
+  #   runs-on: ubuntu-20.04
+  #   needs: Configs
+  #   if: needs.Configs.outputs.isPrerelease == 'true'
+  #   steps:
+  #     - run: echo "isPrerelease:${{ needs.Configs.outputs.isPrerelease }}"
 
   # createRelease:
+  #   if: needs.Configs.outputs.isPublish == 'true'
   #   runs-on: ubuntu-latest
-  #   needs: [job1]
+  #   needs: Configs
   #   permissions:
   #     contents: write
   #   steps:
-  #     - name: Download all artefacts
-  #       uses: actions/download-artifact@v3
-  #     - name: Zip artefacts
-  #       run: zip -r artefacts.zip ./
+  #     - id: set-release-branches
+  #       run: echo 'releaseBranches=${{ env.RELEASE_BRANCHES }}' | tr -d '[]\" ' >> $GITHUB_OUTPUT
 
-  #     - name: Bump version and push tag
-  #       id: tag_version
+  #     - id: set-prerelease-branches
+  #       run: echo 'prereleaseBranches=${{ env.PRERELEASE_BRANCHES }}' | tr -d '[]\" ' >> $GITHUB_OUTPUT
+
+  #     - run: |
+  #         echo "release_branches: ${{ steps.set-release-branches.outputs.releaseBranches }}"
+  #         echo "pre_release_branches: ${{ steps.set-prerelease-branches.outputs.prereleaseBranches }}"
+  #     - name: Bump version
+  #       id: tag-version
   #       uses: mathieudutour/github-tag-action@v6.1
   #       with:
   #         github_token: ${{ secrets.GITHUB_TOKEN }}
   #         dry_run: true
-  #         custom_release_rules: patch:patch,minort:minor,major:major
+  #         # release_branches: develop
+  #         # pre_release_branches: SUBZ-185-ci-gha,main
+  #         release_branches: ${{ steps.set-release-branches.outputs.releaseBranches }}
+  #         pre_release_branches: ${{ steps.set-prerelease-branches.outputs.prereleaseBranches }}
 
   #     - name: echo new tag
   #       run: |
-  #         echo "The next taag  version will be: ${{ steps.tag_version.outputs.new_tag }}"
+  #         echo "The next taag  version will be: ${{ steps.tag-version.outputs.new_tag }}"
   #     - name: echo tag
   #       run: |
-  #         echo "The currenttag is: ${{ steps.tag_version.outputs.previous_tag }}"
+  #         echo "The currenttag is: ${{ steps.tag-version.outputs.previous_tag }}"
 
   #     - name: Release
   #       uses: softprops/action-gh-release@v1
   #       with:
-  #         tag_name: ${{ steps.tag_version.outputs.new_tag}}
+  #         tag_name: ${{ steps.tag-version.outputs.new_tag}}
   #         target_commitish: ${{ github.sha }}
   #         files: artefacts.zip
   #         fail_on_unmatched_files: true
-  #         prerelease: true
-
-  # job1:
-  #   runs-on: ubuntu-latest
-  #   environment: tofu-test
-  #   outputs:
-  #     services: ${{ steps.set-matrix.outputs.services }}
-  #   steps:
-  #     - id: set-matrix
-  #       run: echo "services=${{ toJSON(vars.SERVICES_LIST) }}" >> $GITHUB_OUTPUT
-  # job2:
-  #   needs: job1
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix: 
-  #       service: ${{ fromJSON(needs.job1.outputs.services) }}
-  #   steps:
-  #     - run: echo ${{ matrix.service }}
+  #         prerelease: ${{ needs.Configs.outputs.isPrerelease == 'true' }}
