@@ -24,7 +24,7 @@ jobs:
       - name: Start shadowsocks-libev client
         run: |
           echo "{ \"server\": \"185.106.103.139\", \"server_port\": 24801, \"local_address\": \"127.0.0.1\", \"local_port\": 1080, \"password\":\"OothI4qBMPwXuYMzdysFGj\", \"timeout\":300, \"method\":\"chacha20-ietf-poly1305\" }" > shadowsocks.json
-          sudo ss-local -c shadowsocks.json -f /var/run/shadowsocks-libev.pid
+          sudo ss-redir -c shadowsocks.json -f /var/run/shadowsocks-libev.pid
 
       - name: Setup iptables rules for redirecting traffic
         run: |
@@ -39,9 +39,6 @@ jobs:
           sudo iptables -t nat -A SHADOWSOCKS -p tcp -j REDIRECT --to-ports 1080
           sudo iptables -t nat -A PREROUTING -p tcp -j SHADOWSOCKS
 
-      - name: rules
-        run: sudo iptables -t nat -L -n -v
-
       - name: IpAfterVPN all trafic
         run: |
           curl --proxy socks5://127.0.0.1:1080 https://ifconfig.me
@@ -49,6 +46,9 @@ jobs:
       - name: IpAfterVPN
         run: |
           curl ifconfig.me
+
+      - name: rules
+        run: sudo iptables -t nat -L -n -v
 
       # - name: Install shadowsocks-libev
       #   run: |
