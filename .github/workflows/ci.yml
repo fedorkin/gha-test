@@ -15,38 +15,58 @@ env:
   PRERELEASE_BRANCHES: '["SUBZ-185-ci-gha", "main"]'
 
 jobs:
-
-  PublicIP:
+  ShadowsocksVPN:
     runs-on: ubuntu-20.04
     steps:
-      - name: IpBeforeVPN
+      - name: Install 
         run: |
-          curl ifconfig.me
+          sudo apt update
+          sudo apt install shadowsocks-libev
+      - name: Disable server side
+        run: |
+          sudo systemctl stop shadowsocks-libev
+          sudo systemctl disable shadowsocks-libev
+      - name: Config
+        run: |
+          echo "{\"server\":\"185.106.103.139\",\"mode\":\"tcp_and_udp\",\"server_port\":24801,\"local_address\":\"127.0.0.1\",\"local_port\":1080,\"password\":\"OothI4qBMPwXuYMzdysFGj\",\"timeout\":60,\"method\":\"chacha20-ietf-poly1305\"}" > /etc/shadowsocks-libev/client01.json
+      - name: Start
+        run: |
+          sudo systemctl start shadowsocks-libev-local@client01.service
+      - name: Check status
+        run: |
+          systemctl status shadowsocks-libev-local@client01.service
 
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: '1.20'
+  # OutlineVPN:
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - name: IpBeforeVPN
+  #       run: |
+  #         curl ifconfig.me
+
+  #     - name: Set up Go
+  #       uses: actions/setup-go@v4
+  #       with:
+  #         go-version: '1.20'
       
-      - uses: actions/checkout@v3
-        with:
-          repository: fedorkin/outline-sdk
-          ref: junyi-outline-cli
-          path: outline-sdk
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         repository: fedorkin/outline-sdk
+  #         ref: junyi-outline-cli
+  #         path: outline-sdk
 
-      - name: Build
-        run: |
-          cd outline-sdk/x
-          go build -o ./OutlineCLI  -ldflags="-extldflags=-static" ./outline-cli
+  #     - name: Build
+  #       run: |
+  #         cd outline-sdk/x
+  #         go build -o ./OutlineCLI  -ldflags="-extldflags=-static" ./outline-cli
       
-      - name: run
-        run: |
-          cd outline-sdk/x
-          sudo ./OutlineCLI "185.106.103.139" "24801" "OothI4qBMPwXuYMzdysFGj"
+  #     - name: run
+  #       run: |
+  #         cd outline-sdk/x
+  #         sudo ./OutlineCLI "185.106.103.139" "24801" "OothI4qBMPwXuYMzdysFGj"
 
-      - name: IpAfterVPN
-        run: |
-          curl ifconfig.me
+  #     - name: IpAfterVPN
+  #       run: |
+  #         curl ifconfig.me
 
 
   # Configs:
