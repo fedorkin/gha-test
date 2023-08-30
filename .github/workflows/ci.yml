@@ -18,23 +18,38 @@ jobs:
   ShadowsocksVPN:
     runs-on: ubuntu-20.04
     steps:
-      - name: Install 
+      - name: IpAfterVPN
+        run: |
+          curl ifconfig.me
+
+      - name: Install shadowsocks-libev
         run: |
           sudo apt update
           sudo apt install shadowsocks-libev
-      - name: Disable server side
+      - name: Disable server side shadowsocks-libev
         run: |
           sudo systemctl stop shadowsocks-libev
           sudo systemctl disable shadowsocks-libev
-      - name: Config
+      - name: Config shadowsocks-libev
         run: |
           echo "{\"server\":\"185.106.103.139\",\"mode\":\"tcp_and_udp\",\"server_port\":24801,\"local_address\":\"127.0.0.1\",\"local_port\":1080,\"password\":\"OothI4qBMPwXuYMzdysFGj\",\"timeout\":60,\"method\":\"chacha20-ietf-poly1305\"}" | sudo tee /etc/shadowsocks-libev/client01.json
-      - name: Start
+      - name: Start shadowsocks-libev client
         run: |
           sudo systemctl start shadowsocks-libev-local@client01.service
-      - name: Check status
+      - name: Check status shadowsocks-libev client
         run: |
           systemctl status shadowsocks-libev-local@client01.service
+      - name: Istall proxychains4
+        run: |
+          sudo apt-get install proxychains4
+      - name: Config proxychains4
+        run: |
+          echo "socks5   127.0.0.1   1080" | sudo tee -a /etc/proxychains4.conf
+          proxychains bash
+          
+      - name: IpAfterVPN
+        run: |
+          curl ifconfig.me
 
   # OutlineVPN:
   #   runs-on: ubuntu-20.04
