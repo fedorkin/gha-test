@@ -31,7 +31,11 @@ jobs:
           sudo iptables -t nat -N SHADOWSOCKS
           sudo iptables -t nat -A SHADOWSOCKS -d 185.106.103.139 -j RETURN
           sudo iptables -t nat -A SHADOWSOCKS -p tcp -j REDIRECT --to-ports 1080
-          sudo iptables -t nat -A PREROUTING -p tcp -j SHADOWSOCKS
+          sudo iptables -t nat -A OUTPUT -p tcp -j SHADOWSOCKS
+
+      - name: IpAfterVPN
+        run: |
+          curl ifconfig.me
 
       - name: rules
         run: sudo iptables -t nat -L -n -v
@@ -39,10 +43,6 @@ jobs:
       - name: IpAfterVPN all trafic
         run: |
           curl --proxy socks5://127.0.0.1:1080 https://ifconfig.me
-
-      - name: IpAfterVPN
-        run: |
-          curl ifconfig.me
 
       - name: rules
         run: sudo iptables -t nat -L -n -v
