@@ -23,7 +23,7 @@ jobs:
 
       - name: Setup ss-redir
         run: |
-          echo "{ \"server\": \"185.106.103.139\", \"server_port\": 24801, \"local_address\": \"0.0.0.0\", \"local_port\": 1080, \"password\": \"OothI4qBMPwXuYMzdysFGj\", \"timeout\": 600, \"method\": \"chacha20-ietf-poly1305\" }" > shadowsocks.json
+          echo "{ \"server\": \"185.106.103.139\", \"server_port\": 24801, \"local_address\": \"127.0.0.1\", \"local_port\": 1080, \"password\": \"OothI4qBMPwXuYMzdysFGj\", \"timeout\": 600, \"method\": \"chacha20-ietf-poly1305\" }" > shadowsocks.json
           sudo ss-redir -c shadowsocks.json -f /var/run/shadowsocks.pid
 
       - name: Configure iptables for redirection
@@ -36,9 +36,9 @@ jobs:
       - name: rules
         run: sudo iptables -t nat -L -n -v
 
-      # - name: IpAfterVPN all trafic
-      #   run: |
-      #     curl --proxy socks5://0.0.0.0:1080 https://ifconfig.me
+      - name: IpAfterVPN all trafic
+        run: |
+          curl --proxy socks5://127.0.0.1:1080 https://ifconfig.me
 
       - name: IpAfterVPN
         run: |
