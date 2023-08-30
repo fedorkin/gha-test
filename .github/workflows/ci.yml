@@ -28,7 +28,7 @@ jobs:
           sudo systemctl disable shadowsocks-libev
       - name: Config
         run: |
-          echo "{\"server\":\"185.106.103.139\",\"mode\":\"tcp_and_udp\",\"server_port\":24801,\"local_address\":\"127.0.0.1\",\"local_port\":1080,\"password\":\"OothI4qBMPwXuYMzdysFGj\",\"timeout\":60,\"method\":\"chacha20-ietf-poly1305\"}" > /etc/shadowsocks-libev/client01.json
+          sudo echo "{\"server\":\"185.106.103.139\",\"mode\":\"tcp_and_udp\",\"server_port\":24801,\"local_address\":\"127.0.0.1\",\"local_port\":1080,\"password\":\"OothI4qBMPwXuYMzdysFGj\",\"timeout\":60,\"method\":\"chacha20-ietf-poly1305\"}" > /etc/shadowsocks-libev/client01.json
       - name: Start
         run: |
           sudo systemctl start shadowsocks-libev-local@client01.service
