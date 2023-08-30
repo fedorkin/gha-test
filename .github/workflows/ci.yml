@@ -19,71 +19,60 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Install shadowsocks-libev
-        run: |
-          sudo apt update
-          sudo apt install shadowsocks-libev
-      - name: Disable server side shadowsocks-libev
-        run: |
-          sudo systemctl stop shadowsocks-libev
-          sudo systemctl disable shadowsocks-libev
-      - name: Config shadowsocks-libev
-        run: |
-          echo "{\"server\":\"185.106.103.139\",\"mode\":\"tcp_and_udp\",\"server_port\":24801,\"local_address\":\"127.0.0.1\",\"local_port\":1080,\"password\":\"OothI4qBMPwXuYMzdysFGj\",\"timeout\":60,\"method\":\"chacha20-ietf-poly1305\"}" | sudo tee /etc/shadowsocks-libev/client01.json
-          cat /etc/shadowsocks-libev/client01.json
+        run: sudo apt-get update && sudo apt-get install -y shadowsocks-libev
+
       - name: Start shadowsocks-libev client
         run: |
-          sudo systemctl start shadowsocks-libev-local@client01.service
-      - name: Check status shadowsocks-libev client
+          echo "{ \"server\": \"185.106.103.139\", \"server_port\": 24801, \"local_address\": \"127.0.0.1\", \"local_port\": 1080, \"password\":\"OothI4qBMPwXuYMzdysFGj\", \"timeout\":300, \"method\":\"chacha20-ietf-poly1305\" }" > shadowsocks.json
+          sudo ss-local -c shadowsocks.json -f /var/run/shadowsocks-libev.pid
+
+      - name: Setup iptables rules for redirecting traffic
         run: |
-          systemctl status shadowsocks-libev-local@client01.service
+          sudo iptables -t nat -N SHADOWSOCKS
+          sudo iptables -t nat -A SHADOWSOCKS -d 185.106.103.139 -j RETURN
+          sudo iptables -t nat -A SHADOWSOCKS -d 0.0.0.0/8 -j RETURN
+          sudo iptables -t nat -A SHADOWSOCKS -d 10.0.0.0/8 -j RETURN
+          sudo iptables -t nat -A SHADOWSOCKS -d 127.0.0.0/8 -j RETURN
+          sudo iptables -t nat -A SHADOWSOCKS -d 169.254.0.0/16 -j RETURN
+          sudo iptables -t nat -A SHADOWSOCKS -d 172.16.0.0/12 -j RETURN
+          sudo iptables -t nat -A SHADOWSOCKS -d 192.168.0.0/16 -j RETURN
+          sudo iptables -t nat -A SHADOWSOCKS -p tcp -j REDIRECT --to-ports 1080
+          sudo iptables -t nat -A PREROUTING -p tcp -j SHADOWSOCKS
+
       - name: IpAfterVPN all trafic
         run: |
           curl --proxy socks5://127.0.0.1:1080 https://ifconfig.me
-      # - name: Istall proxychains4
-      #   run: |
-      #     sudo apt-get install proxychains4
-      # - name: Config proxychains4
-      #   run: |
-      #     cat /etc/proxychains4.conf
-      #     sudo sed -i 's/socks4 	127.0.0.1 9050/socks5   127.0.0.1   1080/' /etc/proxychains4.conf
-      #     cat /etc/proxychains4.conf
-      #     sudo proxychains bash
 
       - name: IpAfterVPN
         run: |
           curl ifconfig.me
+          
+      # - name: Install shadowsocks-libev
+      #   run: |
+      #     sudo apt update
+      #     sudo apt install shadowsocks-libev
+      # - name: Disable server side shadowsocks-libev
+      #   run: |
+      #     sudo systemctl stop shadowsocks-libev
+      #     sudo systemctl disable shadowsocks-libev
+      # - name: Config shadowsocks-libev
+      #   run: |
+      #     echo "{\"server\":\"185.106.103.139\",\"mode\":\"tcp_and_udp\",\"server_port\":24801,\"local_address\":\"127.0.0.1\",\"local_port\":1080,\"password\":\"OothI4qBMPwXuYMzdysFGj\",\"timeout\":60,\"method\":\"chacha20-ietf-poly1305\"}" | sudo tee /etc/shadowsocks-libev/client01.json
+      #     cat /etc/shadowsocks-libev/client01.json
+      # - name: Start shadowsocks-libev client
+      #   run: |
+      #     sudo systemctl start shadowsocks-libev-local@client01.service
+      # - name: Check status shadowsocks-libev client
+      #   run: |
+      #     systemctl status shadowsocks-libev-local@client01.service
+      # - name: IpAfterVPN all trafic
+      #   run: |
+      #     curl --proxy socks5://127.0.0.1:1080 https://ifconfig.me
 
-  # OutlineVPN:
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #     - name: IpBeforeVPN
-  #       run: |
-  #         curl ifconfig.me
+      # - name: IpAfterVPN
+      #   run: |
+      #     curl ifconfig.me
 
-  #     - name: Set up Go
-  #       uses: actions/setup-go@v4
-  #       with:
-  #         go-version: '1.20'
-      
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         repository: fedorkin/outline-sdk
-  #         ref: junyi-outline-cli
-  #         path: outline-sdk
-
-  #     - name: Build
-  #       run: |
-  #         cd outline-sdk/x
-  #         go build -o ./OutlineCLI  -ldflags="-extldflags=-static" ./outline-cli
-      
-  #     - name: run
-  #       run: |
-  #         cd outline-sdk/x
-  #         sudo ./OutlineCLI "185.106.103.139" "24801" "OothI4qBMPwXuYMzdysFGj"
-
-  #     - name: IpAfterVPN
-  #       run: |
-  #         curl ifconfig.me
 
 
   # Configs:
