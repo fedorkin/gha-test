@@ -18,6 +18,13 @@ jobs:
   ShadowsocksVPN:
     runs-on: ubuntu-20.04
     steps:
+      - name: IpBeforeVPN
+        run: |
+          curl ifconfig.me
+          curl ipecho.net/plain
+          host myip.opendns.com resolver1.opendns.com
+          dig +short myip.opendns.com @resolver1.opendns.com
+
       - name: Install shadowsocks-libev
         run: sudo apt-get update && sudo apt-get install -y shadowsocks-libev
 
@@ -38,6 +45,7 @@ jobs:
           curl ifconfig.me
           curl ipecho.net/plain
           host myip.opendns.com resolver1.opendns.com
+          dig +short myip.opendns.com @resolver1.opendns.com
 
       - name: rules
         run: sudo iptables -t nat -L -n -v
