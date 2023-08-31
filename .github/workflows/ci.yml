@@ -37,6 +37,7 @@ jobs:
         run: |
           curl ifconfig.me
           curl ipecho.net/plain
+          host myip.opendns.com resolver1.opendns.com
 
       - name: rules
         run: sudo iptables -t nat -L -n -v
