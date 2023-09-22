@@ -31,6 +31,19 @@ jobs:
           echo "${GITHUB_REF}"
           echo "${GITHUB_HEAD_REF}"
 
+  deploy1:
+    runs-on: ubuntu-20.04
+    environment: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.release }}
+      - name: Info
+        run: |
+          echo "${GITHUB_SHA}"
+          echo "${GITHUB_REF}"
+          echo "${GITHUB_HEAD_REF}"
+
       # - uses: cardinalby/git-get-release-action@v1
       #   id: getByTag
       #   env:
