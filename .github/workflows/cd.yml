@@ -1,0 +1,44 @@
+name: cd
+
+# on:
+#   workflow_run:
+#     workflows: ["CI"]
+#     types:
+#       - completed
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run tests against'
+        type: environment
+        required: true
+      release:
+        description: 'Release'
+        required: true
+
+jobs:
+  job1:
+    runs-on: ubuntu-20.04
+    environment: ${{ inputs.environment }}
+    outputs:
+      dbConnectionString: ${{ steps.get-secrets.outputs.result }}
+      nameOfEnvironments: ${{ vars.NAME_OF_ENVIRONMENTS }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.release }}
+      - name: Info
+        id: get-secrets
+        run: |
+          DB_CONNECTION_STRING = ${{ secrets.DB_CONNECTION_STRING }}
+          echo "result = $DB_CONNECTION_STRING" >> $GITHUB_OUTPUT
+
+  job2:
+    needs: job1
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Info
+        run: |
+          echo "dbConndectionString: ${{ needs.job1.outputs.dbConnectionString }}"
+          echo "nameOfEnvironments: ${{ needs.job1.outputs.nameOfEnvironments }}"
