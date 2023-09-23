@@ -31,7 +31,8 @@ jobs:
       - name: Info
         id: get-secrets
         run: |
-          result=$echo("${{ secrets.DB_CONNECTION_STRING }}" | base64 -e)
+          echo "${{ secrets.DB_CONNECTION_STRING }}" > 1.txt
+          result=cat 1.txt
           echo "result=$result" >> $GITHUB_OUTPUT
 
   job2:
