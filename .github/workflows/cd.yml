@@ -31,7 +31,8 @@ jobs:
       - name: Info
         id: get-secrets
         run: |
-          result=${{ secrets.DB_CONNECTION_STRING }}
+          # result=${{ secrets.DB_CONNECTION_STRING }}
+          result=${{ vars.NAME_OF_ENVIRONMENTS }}
           echo "result=$result" >> $GITHUB_OUTPUT
 
   job2:
