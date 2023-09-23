@@ -20,6 +20,10 @@ on:
 jobs:
   job1:
     runs-on: ubuntu-20.04
+    environment: ${{ inputs.environment }}
+    outputs:
+      dbConnectionString: ${{ secrets.DB_CONNECTION_STRING }}
+      nameOfEnvironments: ${{ vars.NAME_OF_ENVIRONMENTS }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -33,38 +37,8 @@ jobs:
   job2:
     needs: job1
     runs-on: ubuntu-20.04
-    environment: ${{ inputs.environment }}
     steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.release }}
       - name: Info
         run: |
-          echo "${GITHUB_SHA}"
-          echo "${GITHUB_REF}"
-          echo "${GITHUB_HEAD_REF}"
-
-      # - uses: cardinalby/git-get-release-action@v1
-      #   id: getByTag
-      #   env:
-      #     GITHUB_TOKEN: ${{ github.token }}
-      #   with:
-      #     tag: ${{ inputs.release }}
-      # - name: Release Info
-      #   run: |
-      #     echo ${{ toJSON(steps.getByTag.outputs) }}
-
-
-
-
-
-      # - uses: robinraju/release-downloader@v1.8
-      #   with:
-      #     tag: ${{ inputs.release }}
-      #     fileName: artefacts.zip
-          
-      # - name: Display structure of downloaded files
-      #   run: ls -R
-      
-      # - name: Echo connection string from secrets
-      #   run: echo "${GITHUB_REF} ${{ secrets.DB_CONNECTION_STRING }}"
+          echo "dbConndectionString: ${{ needs.job1.outputs.dbConnectionString }}"
+          echo "nameOfEnvironments: ${{ needs.job1.outputs.nameOfEnvironments }}"
