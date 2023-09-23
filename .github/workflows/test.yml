@@ -1,4 +1,4 @@
-name: CD
+name: Test1
 
 # on:
 #   workflow_run:
@@ -18,7 +18,7 @@ on:
         required: true
 
 jobs:
-  deploy:
+  job1:
     runs-on: ubuntu-20.04
     environment: ${{ inputs.environment }}
     steps:
@@ -31,7 +31,8 @@ jobs:
           echo "${GITHUB_REF}"
           echo "${GITHUB_HEAD_REF}"
 
-  deploy1:
+  job2:
+    needs: job1
     runs-on: ubuntu-20.04
     environment: ${{ inputs.environment }}
     steps:
