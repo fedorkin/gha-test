@@ -31,8 +31,8 @@ jobs:
       - name: Info
         id: get-secrets
         run: |
-          DB_CONNECTION_STRING = ${{ secrets.DB_CONNECTION_STRING }}
-          echo "result = $DB_CONNECTION_STRING" >> $GITHUB_OUTPUT
+          result=${{ secrets.DB_CONNECTION_STRING }}
+          echo "result=$result" >> $GITHUB_OUTPUT
 
   job2:
     needs: job1
