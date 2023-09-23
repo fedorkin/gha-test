@@ -33,7 +33,7 @@ jobs:
         run: |
           echo "${{ secrets.DB_CONNECTION_STRING }}" > 1.txt
           result=$(cat 1.txt)
-          echo result
+          echo $result
           echo "result=$result" >> $GITHUB_OUTPUT
 
   job2:
