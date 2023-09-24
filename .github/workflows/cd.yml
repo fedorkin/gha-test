@@ -16,33 +16,28 @@ on:
       release:
         description: 'Release'
         required: true
-      deploy_id:
-        default: deploy1
-        description: 'Unique deploy ID'  
-        required: true
 
 jobs:
   job1:
     runs-on: ubuntu-20.04
     environment: ${{ inputs.environment }}
-    outputs:
-      dbConnectionString: ${{ steps.get-secrets.outputs.result }}
-      nameOfEnvironments: ${{ vars.NAME_OF_ENVIRONMENTS }}
     steps:
+      - name: Create Deployment
+        id: create_deployment
+        run: |
+          DEPLOYMENT_ID=$(curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/fedorkin/gha-test/deployments \
+            -d '{"ref": "${{ inputs.release }}", "environment": "${{ inputs.environment }}", "description": "Description of Deployment", "required_contexts": []}' \
+            | jq '.id')
+          echo "DEPLOYMENT_ID=$DEPLOYMENT_ID" >> $GITHUB_ENV
       - uses: actions/checkout@v3
         with:
           ref: ${{ inputs.release }}
       - name: Info
-        id: get-secrets
         run: |
-          echo "${{ secrets.DB_CONNECTION_STRING }}" | base64 > 1.txt
-          # echo "${{ vars.NAME_OF_ENVIRONMENTS }}" | base64 > 1.txt
-
-          mv 1.txt 2.txt
-          result=$(cat 2.txt)
-
-          echo $result
-          echo "result=$result" >> $GITHUB_OUTPUT
+          echo "secret: ${{ secrets.DB_CONNECTION_STRING }}"
 
   job2:
     needs: job1
@@ -52,5 +47,3 @@ jobs:
       - name: Info
         run: |
           echo "secret: ${{ secrets.DB_CONNECTION_STRING }}"
-          echo "dbConndectionString: ${{ needs.job1.outputs.dbConnectionString }}"
-          echo "nameOfEnvironments: ${{ needs.job1.outputs.nameOfEnvironments }}"
