@@ -16,6 +16,10 @@ on:
       release:
         description: 'Release'
         required: true
+      deploy_id:
+        default: deploy1
+        description: 'Unique deploy ID'  
+        required: true
 
 jobs:
   job1:
@@ -43,8 +47,10 @@ jobs:
   job2:
     needs: job1
     runs-on: ubuntu-20.04
+    environment: ${{ inputs.environment }}
     steps:
       - name: Info
         run: |
+          echo "secret: ${{ secrets.DB_CONNECTION_STRING }}"
           echo "dbConndectionString: ${{ needs.job1.outputs.dbConnectionString }}"
           echo "nameOfEnvironments: ${{ needs.job1.outputs.nameOfEnvironments }}"
