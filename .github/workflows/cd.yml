@@ -27,11 +27,12 @@ jobs:
       - name: Create Deployment
         id: create_deployment
         run: |
+          CURRENT_BRANCH=${GITHUB_REF##*/}
           RESPONSE=$(curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             https://api.github.com/repos/fedorkin/gha-test/deployments \
-            -d '{"ref": "${{ inputs.release }}", "environment": "${{ inputs.environment }}", "description": "Description of Deployment", "required_contexts": [], "auto_merge": false}')
+            -d '{"ref": "'"$CURRENT_BRANCH"'", "environment": "${{ inputs.environment }}", "description": "Description of Deployment", "required_contexts": [], "auto_merge": false}')
           echo "$RESPONSE"
           DEPLOYMENT_ID=$(echo "$RESPONSE" | jq '.id')
           echo "DEPLOYMENT_ID=$DEPLOYMENT_ID" >> $GITHUB_ENV
