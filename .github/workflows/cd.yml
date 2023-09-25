@@ -13,33 +13,14 @@ on:
         description: 'Environment to run tests against'
         type: environment
         required: true
-      release:
-        description: 'Release'
-        required: true
 
 concurrency: production
 
 jobs:
   job1:
     runs-on: ubuntu-20.04
-    steps:
-      - name: Info
-        run: |
-          echo "secret: ${{ secrets.DB_CONNECTION_STRING }}"
-
-  job2:
-    needs: job1
-    runs-on: ubuntu-20.04
     environment: ${{ inputs.environment }}
     steps:
       - name: Info
         run: |
-          echo "secret: ${{ secrets.DB_CONNECTION_STRING }}"
-  job3:
-    needs: job1
-    runs-on: ubuntu-20.04
-    environment: ${{ inputs.environment }}
-    steps:
-      - name: Info
-        run: |
-          echo "secret: ${{ secrets.DB_CONNECTION_STRING }}"
+          echo "${{ github.ref }}"
