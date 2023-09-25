@@ -17,14 +17,14 @@ on:
         description: 'Release'
         required: true
 
-permissions:
-  deployments: write
-  contents: read
+
 
 jobs:
   job1:
     runs-on: ubuntu-20.04
-    environment: ${{ inputs.environment }}
+    permissions:
+      deployments: write
+      contents: read
     steps:
       - name: Create Deployment
         id: create_deployment
@@ -37,14 +37,16 @@ jobs:
           echo "$RESPONSE"
           DEPLOYMENT_ID=$(echo "$RESPONSE" | jq '.id')
           echo "DEPLOYMENT_ID=$DEPLOYMENT_ID" >> $GITHUB_ENV
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.release }}
+
+  job2:
+    needs: job1
+    runs-on: ubuntu-20.04
+    environment: ${{ inputs.environment }}
+    steps:
       - name: Info
         run: |
           echo "secret: ${{ secrets.DB_CONNECTION_STRING }}"
-
-  job2:
+  job3:
     needs: job1
     runs-on: ubuntu-20.04
     environment: ${{ inputs.environment }}
