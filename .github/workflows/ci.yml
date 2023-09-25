@@ -12,7 +12,7 @@ on:
 
 env:
   BUILD_INFO_ARTIFACT_NAME: build-info
-  RELEASE_BRANCHES: '["master"]'
+  RELEASE_BRANCHES: '["main"]'
   PRERELEASE_BRANCHES: '["develop"]'
 
 jobs:
