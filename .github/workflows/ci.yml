@@ -11,8 +11,9 @@ on:
       - develop
 
 env:
-  RELEASE_BRANCHES: '["develop"]'
-  PRERELEASE_BRANCHES: '["SUBZ-185-ci-gha", "main"]'
+  BUILD_INFO_ARTIFACT_NAME: build-info
+  RELEASE_BRANCHES: '["master"]'
+  PRERELEASE_BRANCHES: '["develop"]'
 
 jobs:
   Configs:
@@ -49,59 +50,55 @@ jobs:
           value=${{ steps.isRelease.outputs.value == 'true' || steps.isPrerelease.outputs.value == 'true' }}
           echo "value=$value" >> $GITHUB_OUTPUT
 
-  ReleaseJob:
-    runs-on: ubuntu-20.04
+  GenerateAndPublishBuildInfo:
     needs: Configs
-    if: needs.Configs.outputs.isRelease == 'true'
-    steps:
-      - run: echo "isRelease:${{ needs.Configs.outputs.isRelease }}"
-
-  PrereleaseJob:
+    name: Generate build info file
     runs-on: ubuntu-20.04
-    needs: Configs
-    if: needs.Configs.outputs.isPrerelease == 'true'
     steps:
-      - run: echo "isPrerelease:${{ needs.Configs.outputs.isPrerelease }}"
+      - name: Generate build info
+        run: echo "BuildInfo" > ${{ env.BUILD_INFO_ARTIFACT_NAME }}.json
+      - name: Publish build-info to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.BUILD_INFO_ARTIFACT_NAME }}
+          path: ${{ env.BUILD_INFO_ARTIFACT_NAME }}.json
 
   createRelease:
     if: needs.Configs.outputs.isPublish == 'true'
     runs-on: ubuntu-latest
-    needs: Configs
+    needs: 
+      - Configs
+      - GenerateAndPublishBuildInfo
     permissions:
       contents: write
     steps:
-      - id: set-release-branches
+      - name: Download all artefacts
+        uses: actions/download-artifact@v3
+      - name: Archive artefacts
+        run: |
+          for d in */ ; do
+            tar -czf "${d%/}.tar.gz" "$d"
+          done
+      - name: Transform release branches to comma separated list
+        id: get-release-branches
         run: echo 'releaseBranches=${{ env.RELEASE_BRANCHES }}' | tr -d '[]\" ' >> $GITHUB_OUTPUT
-
-      - id: set-prerelease-branches
+      - name: Transform prerelease branches to comma separated list.
+        id: get-prerelease-branches
         run: echo 'prereleaseBranches=${{ env.PRERELEASE_BRANCHES }}' | tr -d '[]\" ' >> $GITHUB_OUTPUT
-
-      - run: |
-          echo "release_branches: ${{ steps.set-release-branches.outputs.releaseBranches }}"
-          echo "pre_release_branches: ${{ steps.set-prerelease-branches.outputs.prereleaseBranches }}"
       - name: Bump version
         id: tag-version
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           dry_run: true
-          # release_branches: develop
-          # pre_release_branches: SUBZ-185-ci-gha,main
-          release_branches: ${{ steps.set-release-branches.outputs.releaseBranches }}
-          pre_release_branches: ${{ steps.set-prerelease-branches.outputs.prereleaseBranches }}
-
-      - name: echo new tag
-        run: |
-          echo "The next taag  version will be: ${{ steps.tag-version.outputs.new_tag }}"
-      - name: echo tag
-        run: |
-          echo "The currenttag is: ${{ steps.tag-version.outputs.previous_tag }}"
-
+          release_branches: ${{ steps.get-release-branches.outputs.releaseBranches }}
+          pre_release_branches: ${{ steps.get-prerelease-branches.outputs.prereleaseBranches }}
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.tag-version.outputs.new_tag}}
           target_commitish: ${{ github.sha }}
-          files: artefacts.zip
+          files: "*.tar.gz"
           fail_on_unmatched_files: true
-          prerelease: ${{ needs.Configs.outputs.isPrerelease == 'true' }}
+          generate_release_notes: true
+          prerelease: ${{ needs.BuildConfig.outputs.isPrerelease == 'true' }}
