@@ -24,24 +24,14 @@ jobs:
       - uses: actions/github-script@v6
         id: get-release
         with:
-          retries: 3
           script: |
-            if (${{ startsWith(github.event.inputs.ref, 'v') }}) {
-              return github.rest.repos.getReleaseByTag({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                tag: "${{ github.event.inputs.ref }}"
-              })
-            } else {
-              return github.rest.repos.getReleaseByTag({
+            return github.rest.repos.getReleaseByTag({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 tag: "${{ github.ref_name }}"
               })
-            }
       - name: Output Github Release
         if: steps.get-release.outputs.result != ''
-        run: echo '${{ steps.get-release.outputs.result }}' | jq -r '.data.tag_name'
-      - name: Info
         run: |
-          echo "${{ toJson(github) }}"
+          echo '${{ steps.get-release.outputs.result }}' | jq -r '.data.tag_name'
+          echo '${{ steps.get-release.outputs.result }}' | jq -r '.prerelease'
