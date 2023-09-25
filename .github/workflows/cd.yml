@@ -33,8 +33,8 @@ jobs:
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             https://api.github.com/repos/fedorkin/gha-test/deployments \
-            -d '{"ref": "${{ inputs.release }}", "environment": "${{ inputs.environment }}", "description": "Description of Deployment", "required_contexts": []}')
-          echo "$RESPONSE" # Выводим весь ответ для диагностики
+            -d '{"ref": "${{ inputs.release }}", "environment": "${{ inputs.environment }}", "description": "Description of Deployment", "required_contexts": [], "auto_merge": false}')
+          echo "$RESPONSE"
           DEPLOYMENT_ID=$(echo "$RESPONSE" | jq '.id')
           echo "DEPLOYMENT_ID=$DEPLOYMENT_ID" >> $GITHUB_ENV
       - uses: actions/checkout@v3
