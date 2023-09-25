@@ -21,6 +21,27 @@ jobs:
     runs-on: ubuntu-20.04
     environment: ${{ inputs.environment }}
     steps:
+      - uses: actions/github-script@v6
+        id: get-release
+        with:
+          retries: 3
+          script: |
+            if (${{ startsWith(github.event.inputs.ref, 'v') }}) {
+              return github.rest.repos.getReleaseByTag({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag: "${{ github.event.inputs.ref }}"
+              })
+            } else {
+              return github.rest.repos.getReleaseByTag({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag: "${{ github.ref_name }}"
+              })
+            }
+      - name: Output Github Release
+        if: steps.get-release.outputs.result != ''
+        run: echo '${{ steps.get-release.outputs.result }}' | jq -r '.data.tag_name'
       - name: Info
         run: |
-          echo "${{ github.ref }}"
+          echo "${{ toJson(github) }}"
