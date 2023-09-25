@@ -17,8 +17,6 @@ on:
         description: 'Release'
         required: true
 
-
-
 jobs:
   job1:
     runs-on: ubuntu-20.04
