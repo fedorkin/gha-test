@@ -17,12 +17,14 @@ on:
         description: 'Release'
         required: true
 
+permissions:
+  deployments: write
+  contents: read
+
 jobs:
   job1:
     runs-on: ubuntu-20.04
     environment: ${{ inputs.environment }}
-    permissions:
-      deployments: write
     steps:
       - name: Create Deployment
         id: create_deployment
