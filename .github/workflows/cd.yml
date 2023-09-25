@@ -4,7 +4,7 @@ name: cd
 #   workflow_run:
 #     workflows: ["CI"]
 #     types:
-#       - completed
+#       - completed 
 
 on:
   workflow_dispatch:
