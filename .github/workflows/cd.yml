@@ -34,4 +34,4 @@ jobs:
         if: steps.get-release.outputs.result != ''
         run: |
           echo '${{ steps.get-release.outputs.result }}' | jq -r '.data.tag_name'
-          echo '${{ steps.get-release.outputs.result }}' | jq -r '.prerelease'
+          echo '${{ steps.get-release.outputs.result }}' | jq -r '.data.prerelease'
